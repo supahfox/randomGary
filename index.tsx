@@ -2,9 +2,10 @@ import "./styles.css";
 
 import { addChatBarButton, ChatBarButton, removeChatBarButton } from "@api/ChatButtons";
 import { definePluginSettings } from "@api/Settings";
-import { classNameFactory } from "@api/Styles";
+import { classNameFactory } from "@utils/css";
 import { Margins } from "@utils/margins";
 import { classes } from "@utils/misc";
+import { IconComponent } from "@utils/types";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, openModal } from "@utils/modal";
 import definePlugin, { OptionType, PluginNative } from "@utils/types";
 import { findByPropsLazy, findLazy, findStoreLazy } from "@webpack";
@@ -17,18 +18,16 @@ const { getSlowmodeCooldownGuess } = findByPropsLazy("getSlowmodeCooldownGuess")
 const Native = VencordNative.pluginHelpers.RandomGary as PluginNative<typeof import("./native")>;
 
 
-export function GaryIcon({ height = 30, width = 30, className }: { height?: number; width?: number; className?: string; }) {
+export const GaryIcon: IconComponent = ({ height = 20, width = 20, className }) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill="none" viewBox="0 0 24 24" className={classes(className, cl("icon"))}>
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24" className={classes(className, cl("icon"))}>
             <path
                 fill="currentColor"
-                fillRule="evenodd"
                 d="M11.75 6.406c-1.48 0-1.628.157-2.394.157C8.718 6.563 6.802 5 5.845 5c-.958 0-2.075.563-2.075 2.188v1.875c.002.492.18 2 .88 1.597-.827.978-.91 2.119-.899 3.223-.223.064-.45.137-.671.212-.684.234-1.41.532-1.737.744a.75.75 0 0 0 .814 1.26c.156-.101.721-.35 1.408-.585l.228-.075c.046.433.161.83.332 1.19l-.024.013c-.41.216-.79.465-1.032.623l-.113.074a.75.75 0 1 0 .814 1.26l.131-.086c.245-.16.559-.365.901-.545.08-.043.157-.081.231-.116C6.763 19.475 9.87 20 11.75 20s4.987-.525 6.717-2.148c.074.035.15.073.231.116.342.18.656.385.901.545l.131.086a.75.75 0 0 0 .814-1.26l-.113-.074a13.008 13.008 0 0 0-1.032-.623l-.024-.013c.171-.36.286-.757.332-1.19l.228.075c.687.235 1.252.484 1.409.585a.75.75 0 0 0 .813-1.26c-.327-.212-1.053-.51-1.736-.744-.221-.075-.449-.148-.672-.213.012-1.104-.072-2.244-.9-3.222.7.403.88-1.105.881-1.598V7.188C19.73 5.563 18.613 5 17.655 5c-.957 0-2.873 1.563-3.51 1.563-.767 0-.915-.157-2.395-.157Zm-.675 9.194c.202-.069.441-.1.675-.1.234 0 .473.031.676.1.1.034.22.088.328.174a.619.619 0 0 1 .246.476c0 .23-.139.39-.246.476-.107.086-.229.14-.328.174-.203.069-.442.1-.676.1-.234 0-.473-.031-.675-.1a1.078 1.078 0 0 1-.329-.174.619.619 0 0 1-.246-.476c0-.23.139-.39.246-.476.107-.086.23-.14.329-.174Zm2.845-3.1c.137-.228.406-.5.81-.5s.674.272.81.5c.142.239.21.527.21.813 0 .285-.068.573-.21.811-.136.229-.406.501-.81.501s-.673-.272-.81-.5a1.596 1.596 0 0 1-.21-.813c0-.285.068-.573.21-.811Zm-5.96 0c.137-.228.406-.5.81-.5s.674.272.81.5c.142.239.21.527.21.813 0 .285-.068.573-.21.811-.136.229-.406.501-.81.501s-.673-.272-.81-.5a1.596 1.596 0 0 1-.21-.813c0-.285.068-.573.21-.811Z"
-                clipRule="evenodd"
             />
         </svg>
     );
-}
+};
 
 const settings = definePluginSettings({
     randomGarySendMethod: {
@@ -253,8 +252,9 @@ export const GaryChatBarIcon: ChatBarButton = ({ isMainChat }) => {
             onContextMenu={handleRightClick}
             buttonProps={{
                 "aria-label": "Gary Button",
-                className: classes(cl("chat-button"), isAnimating ? cl("animating") : "")
-            }}
+                "data-vc-gary": "true",
+                "data-vc-gary-animating": String(isAnimating)
+            } as any}
         >
             <GaryIcon />
         </ChatBarButton>
@@ -273,10 +273,12 @@ export default definePlugin({
         VencordNative.csp.requestAddOverride("api.thecatapi.com", ["img-src", "connect-src"], "RandomGary");
         VencordNative.csp.requestAddOverride("https://minky.materii.dev", ["img-src", "connect-src"], "RandomGary");
         VencordNative.csp.requestAddOverride("minky.materii.dev", ["img-src", "connect-src"], "RandomGary");
-        addChatBarButton("vc-gary", GaryChatBarIcon);
     },
     stop() {
-        removeChatBarButton("vc-gary");
+    },
+    chatBarButton: {
+        icon: GaryIcon,
+        render: GaryChatBarIcon
     }
 });
 
