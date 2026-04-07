@@ -153,7 +153,8 @@ function GaryModal({ rootProps }: { rootProps: ModalProps; }) {
         { value: "gary", label: "Gary API" },
         { value: "catapi", label: "Cat API" },
         { value: "minker", label: "Minker API (attachment only)" },
-        { value: "goober", label: "Goober API" }
+        { value: "goober", label: "Goober API" },
+        { value: "gully", label: "Gully API" }
     ];
     const currentValue = settings.use(["randomGaryImageSource"]).randomGaryImageSource;
     return (
