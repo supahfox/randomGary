@@ -10,6 +10,7 @@ import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ope
 import definePlugin, { OptionType, PluginNative } from "@utils/types";
 import { findByPropsLazy, findLazy, findStoreLazy } from "@webpack";
 import { ChannelStore, Constants, FluxDispatcher, Forms, MessageActions, PermissionsBits, PermissionStore, RestAPI, SearchableSelect, SelectedChannelStore, showToast, SnowflakeUtils, Toasts, useState } from "@webpack/common";
+import { Heading } from "@components/Heading";
 
 const cl = classNameFactory("vc-gary-");
 const CloudUpload = findLazy(m => m.prototype?.trackUploadFinished);
@@ -161,26 +162,24 @@ function GaryModal({ rootProps }: { rootProps: ModalProps; }) {
     return (
         <ModalRoot {...rootProps}>
             <ModalHeader className={cl("modal-header")}>
-                <Forms.FormTitle tag="h2">
+                <Heading tag="h2">
                     Button Settings
-                </Forms.FormTitle>
+                </Heading>
                 <ModalCloseButton onClick={rootProps.onClose} />
             </ModalHeader>
             <ModalContent className={cl("modal-content")}>
-                <section className={Margins.top16}>
-                    <Forms.FormTitle tag="h3">
-                        {"Image Source"}
-                    </Forms.FormTitle>
+                <Heading tag="h3">
+                    {"Image Source"}
+                </Heading>
 
-                    <SearchableSelect
-                        options={options}
-                        value={options.find(o => o.value === currentValue)}
-                        placeholder={"Select a source"}
-                        maxVisibleItems={5}
-                        closeOnSelect={true}
-                        onChange={v => settings.store.randomGaryImageSource = v}
-                    />
-                </section>
+                <SearchableSelect
+                    options={options}
+                    value={options.find(o => o.value === currentValue)?.value}
+                    placeholder={"Select a source"}
+                    maxVisibleItems={5}
+                    closeOnSelect={true}
+                    onChange={v => settings.store.randomGaryImageSource = v}
+                />
             </ModalContent>
         </ModalRoot>
     );
